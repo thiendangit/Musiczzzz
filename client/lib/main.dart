@@ -1,3 +1,4 @@
+import 'package:client/core/theme/app_pallete.dart';
 import 'package:client/core/theme/app_theme.dart';
 import 'package:client/features/auth/views/pages/signup_page.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +14,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Music App',
-      theme: AppTheme.theme,
+      title: 'Music',
+      darkTheme: AppTheme.theme,
+      themeMode: ThemeMode.light,
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: Pallete.backgroundColor,
+    inputDecorationTheme: const InputDecorationTheme(
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Pallete.borderColor, width: 3),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Pallete.borderColor, width: 3),
+      ),
+      floatingLabelBehavior: FloatingLabelBehavior.always,
+    ),
+      ),
       home: const SignupPage(),
     );
   }

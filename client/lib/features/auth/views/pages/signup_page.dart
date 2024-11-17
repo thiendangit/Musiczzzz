@@ -1,3 +1,4 @@
+import 'package:client/features/auth/views/widgets/custom_field.dart';
 import 'package:flutter/material.dart';
 
 class SignupPage extends StatefulWidget {
@@ -15,6 +16,7 @@ class _SignupPageState extends State<SignupPage> {
       body: const Column(
         children: [
           Text('Sign Up.', style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold)),
+          CustomField()
         ],
       ),
     );
