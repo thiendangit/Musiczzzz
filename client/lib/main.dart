@@ -10,6 +10,11 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  static OutlineInputBorder _border(Color color) => OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(color: color, width: 3),
+      );
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -19,15 +24,11 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.light,
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: Pallete.backgroundColor,
-    inputDecorationTheme: const InputDecorationTheme(
-      enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Pallete.borderColor, width: 3),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Pallete.borderColor, width: 3),
-      ),
-      floatingLabelBehavior: FloatingLabelBehavior.always,
-    ),
+        inputDecorationTheme: InputDecorationTheme(
+          enabledBorder: _border(Pallete.borderColor),
+          focusedBorder: _border(Pallete.gradient2),
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+        ),
       ),
       home: const SignupPage(),
     );
