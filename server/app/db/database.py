@@ -1,0 +1,1 @@
+DATABASE_URL = "postgresql://postgres:MyMusicApp:123456@localhost:5432/MusicApp"
