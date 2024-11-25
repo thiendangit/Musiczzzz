@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 
 class AuthGradientButton extends StatefulWidget {
   final VoidCallback onPressed;
+  final String text;
 
   const AuthGradientButton({
     super.key,
     required this.onPressed,
+    this.text = 'Sign Up',
   });
 
   @override
@@ -59,9 +61,9 @@ class _AuthGradientButtonState extends State<AuthGradientButton> {
                   strokeWidth: 2,
                 ),
               )
-            : const Text(
-                'Sign Up',
-                style: TextStyle(fontWeight: FontWeight.bold),
+            : Text(
+                widget.text,
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
       ),
     );
