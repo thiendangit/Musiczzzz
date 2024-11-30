@@ -1,5 +1,6 @@
 from fastapi import APIRouter
-from api.endpoints import user
+
+from app.api.endpoints import user
 # Import thêm các router khác
 # from api.endpoints import auth
 # from api.endpoints import music
