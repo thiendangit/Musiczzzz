@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from api.router import api_router
+from app.api.router import api_router
+from app.db.database import SessionLocal
 
 app = FastAPI(
     title="Music App API",
