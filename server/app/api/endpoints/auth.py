@@ -10,6 +10,7 @@ router = APIRouter()
 
 @router.post("/signup/", status_code=200, response_model=UserSchema)
 async def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    print(f'${user}')
     # Check if email exists
     existing_user = db.query(UserModel).filter(UserModel.email == user.email).first()
 

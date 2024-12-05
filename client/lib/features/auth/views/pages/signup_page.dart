@@ -1,4 +1,6 @@
 import 'package:client/core/theme/app_pallete.dart';
+import 'package:client/features/auth/models/auth.dart';
+import 'package:client/features/auth/repositories/auth_remote_reponsitories.dart';
 import 'package:client/features/auth/views/widgets/auth_gradient_button.dart';
 import 'package:client/features/auth/views/widgets/custom_field.dart';
 import 'package:flutter/material.dart';
@@ -24,12 +26,19 @@ class _SignupPageState extends State<SignupPage> {
     super.dispose();
   }
 
-  void signUpUser() {
+  void signUpUser() async {
     if (formKey.currentState!.validate()) {
+      var user = UserCreate(
+          username: nameController.text,
+          email: emailController.text,
+          password: passwordController.text);
       // Print the values to verify data capture
-      debugPrint('Name: ${nameController.text}');
-      debugPrint('Email: ${emailController.text}');
-      debugPrint('Password: ${passwordController.text}');
+      var res = await AuthRemoteReponsitories().signUp(user);
+
+      // var val = switch (res) {
+      //   Left(value: final l) => l,
+      //   Right(value: final r) => r.toString(),
+      // };
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
