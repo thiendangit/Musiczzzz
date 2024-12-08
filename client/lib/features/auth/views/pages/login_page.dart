@@ -1,7 +1,10 @@
 import 'package:client/core/theme/app_pallete.dart';
+import 'package:client/features/auth/models/auth.dart';
+import 'package:client/features/auth/repositories/auth_remote_reponsitories.dart';
 import 'package:client/features/auth/views/widgets/auth_gradient_button.dart';
 import 'package:client/features/auth/views/widgets/custom_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -22,11 +25,43 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void loginUser() {
+  void loginUser() async {
     if (formKey.currentState!.validate()) {
-      // Print the values to verify data capture
-      debugPrint('Email: ${emailController.text}');
-      debugPrint('Password: ${passwordController.text}');
+      var user = UserLogin(
+          email: emailController.text, password: passwordController.text);
+      var response = await AuthRemoteReponsitories().signIn(user);
+
+      response.fold(
+        (failure) {
+          // Handle signup failure (show error message)
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(failure.message), // Access the message property
+              backgroundColor: Colors.red,
+            ),
+          );
+        },
+        (auth) {
+          // Assuming response is a Right type on success
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Signin Successful'),
+                content: const Text('You have successfully logged in!'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Close the dialog
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -89,18 +124,33 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 20),
                   RichText(
-                    text: const TextSpan(
+                    text: TextSpan(
                       text: 'Don\'t have an account? ',
                       style: TextStyle(color: Pallete.whiteColor),
                       children: [
                         TextSpan(
                           text: 'Sign Up',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Pallete.gradient2,
                             fontWeight: FontWeight.bold,
                           ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.pushNamed(context,
+                                  '/signup'); // Navigate to signup page
+                            },
                         ),
                       ],
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context,
+                          '/forgot-password'); // Navigate to forgot password page
+                    },
+                    child: const Text(
+                      'Forgot Password?',
+                      style: TextStyle(color: Pallete.gradient2),
                     ),
                   ),
                 ],

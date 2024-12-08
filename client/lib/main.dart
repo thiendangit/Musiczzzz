@@ -2,6 +2,7 @@ import 'package:client/core/theme/app_pallete.dart';
 import 'package:client/core/theme/app_theme.dart';
 import 'package:client/features/auth/views/pages/login_page.dart';
 import 'package:client/features/auth/views/pages/signup_page.dart';
+import 'package:client/features/auth/views/pages/forgot_password_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,7 +17,6 @@ class MyApp extends StatelessWidget {
         borderSide: BorderSide(color: color, width: 3),
       );
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -31,7 +31,12 @@ class MyApp extends StatelessWidget {
           floatingLabelBehavior: FloatingLabelBehavior.always,
         ),
       ),
-      home: const SignupPage(),
+      home: const LoginPage(),
+      routes: {
+        '/signup': (context) => const SignupPage(),
+        '/forgot-password': (context) => const ForgotPasswordPage(),
+        '/signin': (context) => const LoginPage(),
+      },
     );
   }
 }

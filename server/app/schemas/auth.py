@@ -21,3 +21,8 @@ class UserLogin(BaseModel):
 class UserShow(BaseModel):
     email: str
     username: str
+
+class LoginResponse(BaseModel):
+    access_token: str
+    token_type: str
+    user: User  # Include user information if needed

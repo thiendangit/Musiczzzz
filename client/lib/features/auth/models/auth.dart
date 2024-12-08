@@ -10,14 +10,22 @@ class UserCreate {
       {required this.username, required this.email, required this.password});
 }
 
-class User {
-  String id;
-  String username;
+class UserLogin {
   String email;
+  String password;
+
+  UserLogin({required this.email, required this.password});
+}
+
+class User {
+  String? id;
+  String? username;
+  String? email;
+
   User({
-    required this.id,
-    required this.username,
-    required this.email,
+    this.id,
+    this.username,
+    this.email,
   });
 
   User copyWith({
@@ -65,4 +73,65 @@ class User {
 
   @override
   int get hashCode => id.hashCode ^ username.hashCode ^ email.hashCode;
+}
+
+class Auth {
+  String accessToken;
+  String tokenType;
+  User user;
+
+  Auth({
+    required this.accessToken,
+    required this.tokenType,
+    required this.user,
+  });
+
+  Auth copyWith({
+    String? accessToken,
+    String? tokenType,
+    User? user,
+  }) {
+    return Auth(
+      accessToken: accessToken ?? this.accessToken,
+      tokenType: tokenType ?? this.tokenType,
+      user: user ?? this.user,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'access_token': accessToken,
+      'token_type': tokenType,
+      'user': user.toMap(),
+    };
+  }
+
+  factory Auth.fromMap(Map<String, dynamic> map) {
+    return Auth(
+      accessToken: map['access_token'] as String,
+      tokenType: map['token_type'] as String,
+      user: User.fromMap(map['user'] as Map<String, dynamic>),
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Auth.fromJson(String source) =>
+      Auth.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() =>
+      'Auth(accessToken: $accessToken, tokenType: $tokenType, user: $user)';
+
+  @override
+  bool operator ==(covariant Auth other) {
+    if (identical(this, other)) return true;
+
+    return other.accessToken == accessToken &&
+        other.tokenType == tokenType &&
+        other.user == user;
+  }
+
+  @override
+  int get hashCode => accessToken.hashCode ^ tokenType.hashCode ^ user.hashCode;
 }

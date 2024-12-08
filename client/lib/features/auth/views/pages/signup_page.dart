@@ -32,13 +32,45 @@ class _SignupPageState extends State<SignupPage> {
           username: nameController.text,
           email: emailController.text,
           password: passwordController.text);
-      // Print the values to verify data capture
-      var res = await AuthRemoteReponsitories().signUp(user);
 
-      // var val = switch (res) {
-      //   Left(value: final l) => l,
-      //   Right(value: final r) => r.toString(),
-      // };
+      // Call the signup API
+      var response = await AuthRemoteReponsitories().signUp(user);
+
+      // Check the response
+      response.fold(
+        (failure) {
+          // Handle signup failure (show error message)
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(failure.message), // Access the message property
+              backgroundColor: Colors.red,
+            ),
+          );
+        },
+        (user) {
+          // Assuming response is a Right type on success
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Signup Successful'),
+                content: const Text(
+                    'You have successfully signed up! Please log in.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Close the dialog
+                      Navigator.pop(
+                          context); // Go back to the previous page (LoginPage)
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -107,20 +139,14 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                   const SizedBox(height: 20),
                   AuthGradientButton(onPressed: signUpUser),
-                  const SizedBox(height: 20),
-                  RichText(
-                    text: const TextSpan(
-                      text: 'Already have an account? ',
-                      style: TextStyle(color: Pallete.whiteColor),
-                      children: [
-                        TextSpan(
-                          text: 'Sign In',
-                          style: TextStyle(
-                            color: Pallete.gradient2,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context,
+                          '/signin'); // Navigate to forgot password page
+                    },
+                    child: const Text(
+                      'Already have an account?',
+                      style: TextStyle(color: Pallete.gradient2),
                     ),
                   ),
                 ],
