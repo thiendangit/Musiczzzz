@@ -42,16 +42,12 @@ class AuthRemoteReponsitories {
 
       var responseDecode = (jsonDecode(response.body) as Map<String, dynamic>);
 
-      print(Auth.fromJson(response.body));
-
       if (response.statusCode == 200) {
         return Right(Auth.fromJson(response.body));
       } else {
-        print(Auth.fromJson(response.body));
         return Left(AppFailure(responseDecode['detail']));
       }
     } catch (e) {
-      print(e);
       return Left(AppFailure(e.toString()));
     }
   }
