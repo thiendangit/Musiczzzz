@@ -1,18 +1,18 @@
 import 'package:client/core/theme/app_pallete.dart';
-import 'package:client/features/auth/models/auth.dart';
-import 'package:client/features/auth/repositories/auth_remote_reponsitories.dart';
+import 'package:client/features/auth/viewModels/auth_view_model.dart';
 import 'package:client/features/auth/views/widgets/auth_gradient_button.dart';
 import 'package:client/features/auth/views/widgets/custom_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SignupPage extends StatefulWidget {
+class SignupPage extends ConsumerStatefulWidget {
   const SignupPage({super.key});
 
   @override
-  State<SignupPage> createState() => _SignupPageState();
+  ConsumerState<SignupPage> createState() => _SignupPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class _SignupPageState extends ConsumerState<SignupPage> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -28,27 +28,25 @@ class _SignupPageState extends State<SignupPage> {
 
   void signUpUser() async {
     if (formKey.currentState!.validate()) {
-      var user = UserCreate(
-          username: nameController.text,
-          email: emailController.text,
-          password: passwordController.text);
+      await ref.read(authViewModelProvider.notifier).signUp(
+            email: emailController.text,
+            password: passwordController.text,
+            username: nameController.text,
+          );
 
-      // Call the signup API
-      var response = await AuthRemoteReponsitories().signUp(user);
+      final state = ref.read(authViewModelProvider);
 
-      // Check the response
-      response.fold(
-        (failure) {
-          // Handle signup failure (show error message)
+      if (state.errorMessage != null) {
+        if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(failure.message), // Access the message property
+              content: Text(state.errorMessage!),
               backgroundColor: Colors.red,
             ),
           );
-        },
-        (user) {
-          // Assuming response is a Right type on success
+        }
+      } else {
+        if (mounted) {
           showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -69,8 +67,8 @@ class _SignupPageState extends State<SignupPage> {
               );
             },
           );
-        },
-      );
+        }
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -83,6 +81,8 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(authViewModelProvider);
+
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
@@ -138,11 +138,13 @@ class _SignupPageState extends State<SignupPage> {
                     },
                   ),
                   const SizedBox(height: 20),
-                  AuthGradientButton(onPressed: signUpUser),
+                  if (state.isLoading)
+                    const CircularProgressIndicator()
+                  else
+                    AuthGradientButton(onPressed: signUpUser),
                   TextButton(
                     onPressed: () {
-                      Navigator.pop(context,
-                          '/signin'); // Navigate to forgot password page
+                      Navigator.pop(context); // Navigate back to login page
                     },
                     child: const Text(
                       'Already have an account?',

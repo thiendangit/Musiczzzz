@@ -31,7 +31,7 @@ def create_access_token(data: dict, expires_delta: datetime.timedelta = None):
 
 @router.post("/signup/", status_code=200, response_model=UserSchema)
 async def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    print(f'${user}')
+    print(f"Creating user: {user}")
     # Check if email exists
     existing_user = db.query(UserModel).filter(UserModel.email == user.email).first()
 
@@ -58,6 +58,7 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login/", response_model=LoginResponse)
 async def login(user: UserLogin, db: Session = Depends(get_db)):
+    print(f"Login attempt for email: {user.email}")
     existing_user = db.query(UserModel).filter(UserModel.email == user.email).first()
 
     if not existing_user:
@@ -70,9 +71,12 @@ async def login(user: UserLogin, db: Session = Depends(get_db)):
 
     if match_password:
         access_token = create_access_token(data={"sub": existing_user.email})
-        print({"access_token": access_token, "token_type": "bearer", "user": existing_user})
-        return {"access_token": access_token, "token_type": "bearer", "user": existing_user}
+        response_data = {"access_token": access_token, "token_type": "bearer", "user": existing_user}
+        print(f"Login successful for user: {existing_user.email}")
+        db.commit()  # Commit the transaction
+        return response_data
     else:
+        print(f"Login failed: incorrect password for user: {existing_user.email}")
         raise HTTPException(
             status_code=400,
             detail="Incorrect password."

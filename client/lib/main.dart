@@ -4,9 +4,16 @@ import 'package:client/features/auth/views/pages/login_page.dart';
 import 'package:client/features/auth/views/pages/signup_page.dart';
 import 'package:client/features/auth/views/pages/forgot_password_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -21,7 +28,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Music',
+      title: 'Music App',
       darkTheme: AppTheme.theme,
       themeMode: ThemeMode.light,
       theme: ThemeData.dark().copyWith(
